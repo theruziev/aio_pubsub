@@ -44,8 +44,8 @@ class MongoPubSub(PubSub):
         host="localhost",
         port=27017,
         max_pool_size=100,
-        database="anypubsub",
-        collection_name="anyps_messages",
+        database="pubsub",
+        collection_name="ps_messages",
         collection_size=10 * 2 ** 20,
     ):
         if motor_installed is False:
