@@ -19,7 +19,7 @@ async def test_iteration_protocol():
     await pubsub.init()
     subscriber = await pubsub.subscribe("a_chan")
     await pubsub.publish("a_chan", "hello world!")
-    subscriber = await subscriber.__aiter__()
+    subscriber = subscriber.__aiter__()
     assert await subscriber.__anext__() == "hello world!"
 
 
@@ -35,23 +35,13 @@ async def test_pubsub():
 
 
 @pytest.mark.asyncio
-async def test_subscribe_multiple_chan():
-    pubsub = MongoPubSub()
-    await pubsub.init()
-    subscriber = await pubsub.subscribe("a_chan", "b_chan")
-    await pubsub.publish("a_chan", "hello world!")
-    await pubsub.publish("b_chan", "hello universe!")
-    assert await subscriber.__anext__() == "hello world!"
-    assert await subscriber.__anext__() == "hello universe!"
-
-
-@pytest.mark.asyncio
 async def test_not_subscribed_chan():
     pubsub = MongoPubSub()
     await pubsub.init()
-    subscriber = await pubsub.subscribe("a_chan", "c_chan")
+    subscriber_a_chan = await pubsub.subscribe("a_chan")
+    subscriber_c_chan = await pubsub.subscribe("c_chan")
     await pubsub.publish("a_chan", "hello world!")
     await pubsub.publish("b_chan", "junk message")
     await pubsub.publish("c_chan", "hello universe!")
-    assert await subscriber.__anext__() == "hello world!"
-    assert await subscriber.__anext__() == "hello universe!"
+    assert await subscriber_a_chan.__anext__() == "hello world!"
+    assert await subscriber_c_chan.__anext__() == "hello universe!"

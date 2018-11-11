@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 class Subscriber(metaclass=ABCMeta):
     @abstractmethod
-    async def __aiter__(self):
+    def __aiter__(self):
         """The subscriber iterable"""
 
 
@@ -13,5 +13,5 @@ class PubSub(metaclass=ABCMeta):
         """Publish a message to channel"""
 
     @abstractmethod
-    async def subscribe(self, *channels):
+    async def subscribe(self, channel):
         """Subscribe to one or many channels and return a Subscriber object"""

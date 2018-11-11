@@ -8,7 +8,7 @@ class MemorySubscriber(Subscriber):
     def __init__(self, queue_factory):
         self.messages = queue_factory(maxsize=0)
 
-    async def __aiter__(self):
+    def __aiter__(self):
         return self
 
     async def __anext__(self):
@@ -29,8 +29,7 @@ class MemoryPubSub(PubSub):
             await subscriber.put(message)
         return len(subscribers)
 
-    async def subscribe(self, *channels):
+    async def subscribe(self, channel):
         subscriber = MemorySubscriber(self.queue_factory)
-        for channel in channels:
-            self.subscribers[channel].add(subscriber)
+        self.subscribers[channel].add(subscriber)
         return subscriber
