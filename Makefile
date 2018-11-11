@@ -41,3 +41,9 @@ test:
 freeze:
 	pipenv lock -d
 
+
+_release:
+	scripts/make_release.sh
+
+release: test _release
+

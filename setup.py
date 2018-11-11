@@ -1,8 +1,6 @@
 from setuptools import setup, find_packages
-import sys
 import os
-
-py_version = sys.version_info[:2]
+from async_pubsub._version import __version__
 
 here = os.path.abspath(os.path.dirname(__file__))
 try:
@@ -12,7 +10,7 @@ except IOError:
 
 setup(
     name='async_pubsub',
-    version='0.1',
+    version=__version__,
     description="A generic interface wrapping multiple backends to provide a consistent pubsub API.",
     long_description=README,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -25,7 +23,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'License :: OSI Approved :: MIT License',
     ],
-    keywords='pubsub pub/sub redis mongodb',
+    keywords='pubsub pub/sub mongodb',
     author='Bakhtiyor Ruziev',
     author_email='bakhtiyor.ruziev@yandex.ru',
     url='http://github.com/bruziev/async_pubsub',
@@ -33,15 +31,9 @@ setup(
     include_package_data=True,
     zip_safe=False,
     extras_require={
-        'redis': [
-            'redis > 2.10',
-        ],
         'mongodb': [
             'motor >= 2',
         ],
-        'amqp': [
-            'amqp >= 1.4.9'
-        ]
     },
 
 )
