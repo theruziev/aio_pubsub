@@ -3,6 +3,10 @@ from abc import ABCMeta, abstractmethod
 
 
 class Subscriber(metaclass=ABCMeta):
+    """
+    Subscriber interface
+    """
+
     @abstractmethod
     def __aiter__(self):
         """The subscriber iterable"""
