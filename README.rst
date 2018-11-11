@@ -13,7 +13,7 @@ A generic interface wrapping multiple backends to provide a consistent pubsub AP
 
 Usage
 ------
-To use, you need to implement your pubsub implementation from interfaces or use backends
+To use it, you need to implement your pubsub implementation from interfaces or use backends
 from ``async_pubsub.backends`` package::
 
     from async_pubsub.backends.memory import MemoryPubSub
@@ -38,8 +38,8 @@ from ``async_pubsub.backends`` package::
 Supported backends
 ---------------------
 
-``Disclaimer``: I would not advise you to use this backends, 'cause they are shown only for testing
-or for develop yours:
+``Disclaimer``: I would not advise you to use this backend, because it is shown only for testing purposes.
+Better develop your own implementation.:
 
 * memory
 * mongodb
