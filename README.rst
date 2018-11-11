@@ -18,7 +18,7 @@ from ``async_pubsub.backends`` package::
 
     from async_pubsub.backends.memory import MemoryPubSub
     pubsub = MemoryPubSub()
-    # Create Subscriber
+    # Create subscriber
     subscriber = await pubsub.subscribe("a_chan")
 
     # Push message
@@ -43,4 +43,3 @@ or for develop yours:
 
 * memory
 * mongodb
-
