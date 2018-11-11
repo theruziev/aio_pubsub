@@ -1,3 +1,4 @@
+import typing
 from abc import ABCMeta, abstractmethod
 
 
@@ -8,10 +9,14 @@ class Subscriber(metaclass=ABCMeta):
 
 
 class PubSub(metaclass=ABCMeta):
+    """
+    Main interface for implementation
+    """
+
     @abstractmethod
-    async def publish(self, channel, message):
+    async def publish(self, channel: typing.Any, message: typing.Any):
         """Publish a message to channel"""
 
     @abstractmethod
-    async def subscribe(self, channel):
+    async def subscribe(self, channel: typing.Any):
         """Subscribe to one or many channels and return a Subscriber object"""

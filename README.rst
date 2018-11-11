@@ -13,11 +13,33 @@ A generic interface wrapping multiple backends to provide a consistent pubsub AP
 
 Usage
 ------
+To use, you need to implement your pubsub implementation from interfaces or use backends
+from ``async_pubsub.backends`` package::
 
-TODO
+    from async_pubsub.backends.memory import MemoryPubSub
+    pubsub = MemoryPubSub()
+    # Create Subscriber
+    subscriber = await pubsub.subscribe("a_chan")
+
+    # Push message
+    await pubsub.publish("a_chan", "hello world!")
+    await pubsub.publish("a_chan", "hello universe!")
+
+    # And listening channel
+    try:
+        async for message in subscriber:
+            print(message, flush=True)
+    except KeyboardInterrupt:
+        print("Finish listening")
+
+
+
 
 Supported backends
 ---------------------
+
+``Disclaimer``: I would not advise you to use this backends, 'cause they are shown only for testing
+or for develop yours:
 
 * memory
 * mongodb
