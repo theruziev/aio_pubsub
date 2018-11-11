@@ -11,21 +11,21 @@ try:
 
     motor_installed = True
 except ImportError:
-    pass
+    pass  # pragma: no cover
 
 
 class MongoSubscriber(Subscriber):
-    def __init__(self, collection, channels):
+    def __init__(self, collection, channel):
 
         self.cursor = None
         self.collection = collection
-        self.channels = channels
+        self.channel = channel
         self.cursor = self.collection.find(
-            {"channel": {"$in": self.channels}, "when": {"$gte": datetime.utcnow()}},
+            {"channel": self.channel, "when": {"$gte": datetime.utcnow()}},
             cursor_type=CursorType.TAILABLE_AWAIT,
         )
 
-    async def __aiter__(self):
+    def __aiter__(self):
         return self
 
     async def __anext__(self):
@@ -49,7 +49,7 @@ class MongoPubSub(PubSub):
         collection_size=10 * 2 ** 20,
     ):
         if motor_installed is False:
-            raise RuntimeError("Please install `motor`")
+            raise RuntimeError("Please install `motor`")  # pragma: no cover
         self.client = motor.motor_asyncio.AsyncIOMotorClient(
             host=host, port=port, maxPoolSize=max_pool_size
         )
@@ -73,6 +73,6 @@ class MongoPubSub(PubSub):
             {"type": "message", "channel": channel, "message": message, "when": datetime.utcnow()}
         )
 
-    async def subscribe(self, *channels):
-        subscriber = MongoSubscriber(self.collection, channels)
+    async def subscribe(self, channel):
+        subscriber = MongoSubscriber(self.collection, channel)
         return subscriber

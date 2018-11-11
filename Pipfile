@@ -11,6 +11,7 @@ black = "==18.9b0"
 codecov = "*"
 coverage = "*"
 motor = "*"
+sphinx = "*"
 
 [packages]
 
