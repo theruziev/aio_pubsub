@@ -6,6 +6,7 @@ python:
 
 services:
   - mongodb
+  - redis-server
 
 install:
   - pip install tox
