@@ -14,9 +14,9 @@ A generic interface wrapping multiple backends to provide a consistent pubsub AP
 Usage
 ------
 To use it, you need to implement your pubsub implementation from interfaces or use backends
-from ``async_pubsub.backends`` package::
+from ``aio_pubsub.backends`` package::
 
-    from async_pubsub.backends.memory import MemoryPubSub
+    from aio_pubsub.backends.memory import MemoryPubSub
     pubsub = MemoryPubSub()
     # Create subscriber
     subscriber = await pubsub.subscribe("a_chan")

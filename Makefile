@@ -22,11 +22,11 @@ help:
 cov-report = true
 
 lint:
-	pipenv run flake8 async_pubsub
-	pipenv run black -l 100 --check async_pubsub tests
+	pipenv run flake8 aio_pubsub
+	pipenv run black -l 100 --check aio_pubsub tests
 
 format:
-	pipenv run black -l 100 async_pubsub tests
+	pipenv run black -l 100 aio_pubsub tests
 
 install-dev:
 	pipenv install --skip-lock -d

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from async_pubsub.interfaces import PubSub, Subscriber
+from aio_pubsub.interfaces import PubSub, Subscriber
 from queue import Queue
 from weakref import WeakSet
 

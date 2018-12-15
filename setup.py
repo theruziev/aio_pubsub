@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 import os
-from async_pubsub._version import __version__
+from aio_pubsub._version import __version__
 
 here = os.path.abspath(os.path.dirname(__file__))
 try:
@@ -9,7 +9,7 @@ except IOError:
     README = ''
 
 setup(
-    name='async_pubsub',
+    name='aio_pubsub',
     version=__version__,
     description="A generic interface wrapping multiple backends to provide a consistent pubsub API.",
     long_description=README,

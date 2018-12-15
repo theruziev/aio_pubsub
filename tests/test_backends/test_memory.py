@@ -1,6 +1,6 @@
 import pytest
 
-from async_pubsub.backends.memory import MemoryPubSub
+from aio_pubsub.backends.memory import MemoryPubSub
 
 
 @pytest.mark.asyncio

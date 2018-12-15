@@ -1,5 +1,5 @@
 import json
-from async_pubsub.interfaces import PubSub, Subscriber
+from aio_pubsub.interfaces import PubSub, Subscriber
 
 aioredis_installed = False
 try:

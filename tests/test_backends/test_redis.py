@@ -1,11 +1,11 @@
 import pytest
 
-from async_pubsub.backends.redis import RedisPubSub
+from aio_pubsub.backends.redis import RedisPubSub
 
 
 @pytest.mark.asyncio
 async def test_subscriber_isinstance():
-    from async_pubsub.backends.redis import RedisSubscriber
+    from aio_pubsub.backends.redis import RedisSubscriber
 
     pubsub = RedisPubSub()
     await pubsub.init()
