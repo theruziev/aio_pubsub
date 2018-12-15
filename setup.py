@@ -34,6 +34,10 @@ setup(
         'mongodb': [
             'motor >= 2',
         ],
+        'aioredis': [
+            'aioredis >= 1.2.0',
+        ],
+
     },
 
 )
