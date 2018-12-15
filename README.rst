@@ -39,7 +39,8 @@ Supported backends
 ---------------------
 
 ``Disclaimer``: I would not advise you to use this backend, because it is shown only for testing purposes.
-Better develop your own implementation.:
+Better develop your own implementation.
 
 * memory
 * mongodb
+* redis
