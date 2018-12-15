@@ -1,11 +1,11 @@
 import pytest
 
-from async_pubsub.backends.mongodb import MongoPubSub
+from aio_pubsub.backends.mongodb import MongoPubSub
 
 
 @pytest.mark.asyncio
 async def test_subscriber_isinstance():
-    from async_pubsub.backends.mongodb import MongoSubscriber
+    from aio_pubsub.backends.mongodb import MongoSubscriber
 
     pubsub = MongoPubSub()
     await pubsub.init()

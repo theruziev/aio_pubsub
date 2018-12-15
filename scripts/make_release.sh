@@ -10,7 +10,7 @@ read answer
 
 if echo "$answer" | grep -iq "^y" ;then
   echo "Generating new release..."
-  sed -i "s/$version/$new_version/" async_pubsub/_version.py
+  sed -i "s/$version/$new_version/" aio_pubsub/_version.py
   git commit -a -m "Bump version $new_version"
   git tag -a "$new_version" -m "$new_version"
   git push --follow-tags

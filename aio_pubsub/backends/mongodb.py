@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from datetime import datetime
-from async_pubsub.interfaces import PubSub, Subscriber
+from aio_pubsub.interfaces import PubSub, Subscriber
 
 motor_installed = False
 try:

@@ -2,7 +2,7 @@ API
 ===
 
 
-.. automodule:: async_pubsub.interfaces
+.. automodule:: aio_pubsub.interfaces
     :members:
     :undoc-members:
 
