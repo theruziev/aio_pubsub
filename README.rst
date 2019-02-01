@@ -14,6 +14,7 @@ Installation
 ------------
 
 .. code-block:: bash
+
     pip install aio-pubsub
 
 Usage
