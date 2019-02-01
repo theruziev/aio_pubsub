@@ -10,11 +10,18 @@ AioPubSub
 
 A generic interface wrapping multiple backends to provide a consistent pubsub API.
 
+Installation
+------------
+
+.. code-block:: bash
+    pip install aio-pubsub
 
 Usage
 ------
 To use it, you need to implement your pubsub implementation from interfaces or use backends
-from ``aio_pubsub.backends`` package::
+from ``aio_pubsub.backends`` package
+
+.. code-block:: python
 
     from aio_pubsub.backends.memory import MemoryPubSub
     pubsub = MemoryPubSub()
