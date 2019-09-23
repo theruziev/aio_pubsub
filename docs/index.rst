@@ -54,5 +54,4 @@ Supported backends
 Better develop your own implementation.
 
 * memory
-* mongodb
 * redis
