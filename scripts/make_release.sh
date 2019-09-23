@@ -1,7 +1,7 @@
 #!/bin/bash
 # https://github.com/argaen/aiocache/blob/master/scripts/make_release
 
-version=$(grep -o -E "([0-9]+\.[0-9]+\.[0-9]+)" async_pubsub/_version.py)
+version=$(grep -o -E "([0-9]+\.[0-9]+\.[0-9]+)" aio_pubsub/_version.py)
 echo -n "New version number (current is $version): "
 read new_version
 
