@@ -1,4 +1,5 @@
 import json
+from typing import Union, Dict, List
 
 from aio_pubsub.interfaces import PubSub, Subscriber
 
@@ -31,11 +32,11 @@ class RedisPubSub(PubSub):
         self.sub = pub_connection
         self.pub = sub_connection
 
-    async def publish(self, channel, message):
+    async def publish(self, channel: str, message: Union[Dict, List]):
         channels = await self.pub.pubsub_channels(channel)
         for ch in channels:
             await self.pub.publish_json(ch, message)
 
-    async def subscribe(self, channel):
+    async def subscribe(self, channel) -> "RedisSubscriber":
         channel = await self.sub.subscribe(channel)
         return RedisSubscriber(channel[0])
