@@ -13,11 +13,11 @@ Welcome to AioPubsub's documentation!
    aio_pubsub
 
 
-.. image:: https://travis-ci.com/bruziev/aio_pubsub.svg?branch=master
-   :target: https://travis-ci.com/bruziev/aio_pubsub
+.. image:: https://travis-ci.com/theruziev/aio_pubsub.svg?branch=master
+   :target: https://travis-ci.com/theruziev/aio_pubsub
 
-.. image:: https://codecov.io/gh/bruziev/aio_pubsub/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/bruziev/aio_pubsub/branch/master
+.. image:: https://codecov.io/gh/theruziev/aio_pubsub/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/theruziev/aio_pubsub/branch/master
 
 
 A generic interface wrapping multiple backends to provide a consistent pubsub API.
@@ -55,3 +55,4 @@ Better develop your own implementation.
 
 * memory
 * redis
+* postgresql
