@@ -16,6 +16,10 @@ Installation
 .. code-block:: bash
 
     pip install aio-pubsub
+    # for redis backend
+    pip install aio-pubsub[aioredis]
+    # for postgresql backend
+    pip install aio-pubsub[aiopg]
 
 Usage
 ------
@@ -51,3 +55,4 @@ Better develop your own implementation.
 
 * memory
 * redis
+* postgresql

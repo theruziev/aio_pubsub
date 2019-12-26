@@ -1,7 +1,7 @@
 import json
-from typing import Union, Dict, List
 
 from aio_pubsub.interfaces import PubSub, Subscriber
+from aio_pubsub.typings import Message
 
 aioredis_installed = False
 try:
@@ -32,7 +32,7 @@ class RedisPubSub(PubSub):
         self.sub = pub_connection
         self.pub = sub_connection
 
-    async def publish(self, channel: str, message: Union[Dict, List]):
+    async def publish(self, channel: str, message: Message):
         channels = await self.pub.pubsub_channels(channel)
         for ch in channels:
             await self.pub.publish_json(ch, message)

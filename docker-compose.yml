@@ -5,3 +5,13 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: aiopg
+      POSTGRES_DB: aiopg
