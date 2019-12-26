@@ -7,7 +7,7 @@ from aio_pubsub.backends.postgresql import PostgreSQLPubSub, PostgreSQLSubscribe
 @pytest.fixture()
 async def pg_pool():
     pool = await aiopg.create_pool(
-        "dbname=aiopg user=aiopg password=example host=127.0.0.1 port=5433"
+        "dbname=aiopg user=aiopg password=example host=127.0.0.1 port=5432"
     )
     yield pool
     pool.terminate()
@@ -18,7 +18,7 @@ async def test_init(pg_pool):
     pubsub = PostgreSQLPubSub(pg_pool)
     async with pg_pool.acquire() as pool:
         async with pool.cursor() as cursor:
-            await cursor.execute("DROP table {};".format(pubsub.table_name))
+            await cursor.execute("drop table if exists {};".format(pubsub.table_name))
 
     await pubsub.init()
 
