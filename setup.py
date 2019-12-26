@@ -35,6 +35,9 @@ setup(
         'aioredis': [
             'aioredis >= 1.2.0',
         ],
+        'aiopg': [
+            'aiopg >= 1.0.0',
+        ],
 
     },
 

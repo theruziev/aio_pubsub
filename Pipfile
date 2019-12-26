@@ -12,6 +12,7 @@ codecov = "*"
 coverage = "*"
 sphinx = "*"
 aioredis = "*"
+aiopg = "*"
 
 [packages]
 

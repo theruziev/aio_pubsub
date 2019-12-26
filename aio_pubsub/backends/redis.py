@@ -1,6 +1,7 @@
 import json
 
 from aio_pubsub.interfaces import PubSub, Subscriber
+from aio_pubsub.typings import Message
 
 aioredis_installed = False
 try:
@@ -31,11 +32,11 @@ class RedisPubSub(PubSub):
         self.sub = pub_connection
         self.pub = sub_connection
 
-    async def publish(self, channel, message):
+    async def publish(self, channel: str, message: Message):
         channels = await self.pub.pubsub_channels(channel)
         for ch in channels:
             await self.pub.publish_json(ch, message)
 
-    async def subscribe(self, channel):
+    async def subscribe(self, channel) -> "RedisSubscriber":
         channel = await self.sub.subscribe(channel)
         return RedisSubscriber(channel[0])

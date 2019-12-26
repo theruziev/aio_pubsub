@@ -4,10 +4,15 @@ cache: pip
 
 services:
   - redis-server
+  - postgresql
+
+before_script:
+  - psql -c "CREATE DATABASE aiopg;" -U postgres
+  - psql -c "CREATE USER aiopg WITH PASSWORD 'example';" -U postgres
+
 
 install:
   - pip install tox
-
 
 jobs:
   include:
