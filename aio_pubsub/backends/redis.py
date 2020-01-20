@@ -17,11 +17,7 @@ class RedisSubscriber(Subscriber):
         self.channel = channel
 
     def __aiter__(self):
-        return self
-
-    async def __anext__(self):
-        async for msg in self.channel.iter(encoding="utf-8", decoder=json.loads):
-            return msg
+        return self.channel.iter(encoding="utf-8", decoder=json.loads)
 
 
 class RedisPubSub(PubSub):
