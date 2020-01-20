@@ -47,23 +47,21 @@ class PostgreSQLSubscriber(Subscriber):
         self.table_name = table_name
 
     def __aiter__(self):
-        return self
+        return self._iter()
 
-    async def __anext__(self):
+    async def _iter(self):
         select_sql = SELECT_MSG.format(table_name=self.table_name)
         remove_sql = REMOVE_MSG.format(table_name=self.table_name)
         async with self.conn_pool.acquire() as pool:
             async with pool.cursor() as cursor:
-                while True:
-                    async with cursor.begin():
-                        await cursor.execute(select_sql, {"channel": self.channel})
-                        res = await cursor.fetchone()
-                        if res:
-                            msg_id, _, _, data = res
-                            try:
-                                return data
-                            finally:
-                                await cursor.execute(remove_sql, {"msg_id": msg_id})
+                async with cursor.begin():
+                    await cursor.execute(select_sql, {"channel": self.channel})
+                    res = await cursor.fetchone()
+                    if res:
+                        msg_id, _, _, data = res
+                        await cursor.execute(remove_sql, {"msg_id": msg_id})
+                        yield data
+                        print("T" * 1000)
 
 
 class PostgreSQLPubSub(PubSub):

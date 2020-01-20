@@ -37,6 +37,7 @@ async def test_pubsub(create_pub_sub_conn):
     subscriber = await pubsub.subscribe("a_chan")
     await pubsub.publish("a_chan", "hello world!")
     await pubsub.publish("a_chan", "hello universe!")
+    subscriber = subscriber.__aiter__()
     assert await subscriber.__anext__() == "hello world!"
     assert await subscriber.__anext__() == "hello universe!"
 
@@ -49,5 +50,7 @@ async def test_not_subscribed_chan(create_pub_sub_conn):
     await pubsub.publish("a_chan", "hello world!")
     await pubsub.publish("b_chan", "junk message")
     await pubsub.publish("c_chan", "hello universe!")
+    subscriber_a_chan = subscriber_a_chan.__aiter__()
+    subscriber_c_chan = subscriber_c_chan.__aiter__()
     assert await subscriber_a_chan.__anext__() == "hello world!"
     assert await subscriber_c_chan.__anext__() == "hello universe!"
