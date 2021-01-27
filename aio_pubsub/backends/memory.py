@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from aio_pubsub.interfaces import PubSub, Subscriber
-from queue import Queue
+from asyncio import Queue
 from weakref import WeakSet
 from aio_pubsub.typings import Message
 
@@ -14,7 +14,7 @@ class MemorySubscriber(Subscriber):
         return self
 
     async def __anext__(self):
-        return self.messages.get()
+        return await self.messages.get()
 
     async def put(self, message: Message):
         self.messages.put_nowait(message)
