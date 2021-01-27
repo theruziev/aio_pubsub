@@ -28,23 +28,37 @@ from ``aio_pubsub.backends`` package
 
 .. code-block:: python
 
+    import asyncio
+
     from aio_pubsub.backends.memory import MemoryPubSub
+
     pubsub = MemoryPubSub()
-    # Create subscriber
-    subscriber = await pubsub.subscribe("a_chan")
 
-    # Push message
-    await pubsub.publish("a_chan", "hello world!")
-    await pubsub.publish("a_chan", "hello universe!")
 
-    # And listening channel
-    try:
+    async def sender():
+        """Publish a new message each second"""
+        counter = 0
+        while True:
+            await pubsub.publish("a_chan", "hello world %s !" % counter)
+
+            await asyncio.sleep(1)
+            counter += 1
+
+
+    async def receiver():
+        """Print all message received from channel"""
+
+        subscriber = await pubsub.subscribe("a_chan")
+
         async for message in subscriber:
-            print(message, flush=True)
-    except KeyboardInterrupt:
-        print("Finish listening")
+            print("Received message: '%s'" % message)
 
 
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(
+        asyncio.gather(sender(), receiver())
+    )
+    loop.close()
 
 
 Supported backends
