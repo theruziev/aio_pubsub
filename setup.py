@@ -38,6 +38,9 @@ setup(
         'aiopg': [
             'aiopg >= 1.0.0',
         ],
+        'moror': [
+            'motor >= 2.3.0',
+        ],
 
     },
 

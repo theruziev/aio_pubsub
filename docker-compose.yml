@@ -15,3 +15,9 @@ services:
       POSTGRES_PASSWORD: example
       POSTGRES_USER: aiopg
       POSTGRES_DB: aiopg
+
+  mongodb:
+    container_name: "mongodb"
+    image: mongodb:latest
+    ports:
+      - "27017:27017"
