@@ -1,6 +1,6 @@
 import asyncio
-from datetime import datetime
 import json
+from datetime import datetime
 
 from aio_pubsub.interfaces import PubSub, Subscriber
 from aio_pubsub.typings import Message
@@ -37,27 +37,36 @@ class MongoDBSubscriber(Subscriber):
 
 class MongoDBPubSub(PubSub):
     def __init__(self, host=None, port=None, maxPoolSize=100,
-                 client=None, database='aio_pubsub',
+                 database='aio_pubsub',
                  collection='aio_pubsub_messages',
                  collection_size=10 * 2 ** 20):
         if motor_installed is False:
             raise RuntimeError("Please install `motor`")  # pragma: no cover
 
-        if client is None:
-            client = motor.motor_asyncio.AsyncIOMotorClient(host=host, port=port,
-                                          maxPoolSize=maxPoolSize)
-        self._db = client[database]
+        self._host = host
+        self._port = port
+        self._maxPoolSize = maxPoolSize    
+
+        self._database = database
         self._collection_size = collection_size
         self._collection_name = collection
         self._collection = None
 
     async def get_collection(self):
+        if motor_installed is False:
+            raise RuntimeError("Please install `motor`")  # pragma: no cover
+
         if not self._collection:  
+            client = motor.motor_asyncio.AsyncIOMotorClient(host=self._host, port=self._port,
+                                          maxPoolSize=self._maxPoolSize)
+
+            db = client[self._database]
+
             try:
-                await self._db.create_collection(self._collection_name, size=self._collection_size, capped=True)
+                await db.create_collection(self._collection_name, size=self._collection_size, capped=True)
             except pymongo.errors.CollectionInvalid:
                 pass
-            self._collection = self._db[self._collection_name]
+            self._collection = db[self._collection_name]
 
         return self._collection
 
