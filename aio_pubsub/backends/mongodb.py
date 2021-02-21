@@ -11,7 +11,7 @@ try:
 
     motor_installed = True
 except ImportError:  # pragma: no cover
-    pass 
+    pass
 
 
 class MongoDBSubscriber(Subscriber):
@@ -30,7 +30,7 @@ class MongoDBSubscriber(Subscriber):
             try:
                 async for message in self.cursor:
                     return message["message"]
-            except StopIteration: # pragma: no cover
+            except StopIteration:  # pragma: no cover
                 asyncio.sleep(1)
 
 
