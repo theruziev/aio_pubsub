@@ -5,6 +5,7 @@ cache: pip
 services:
   - redis-server
   - postgresql
+  - mongodb
 
 before_script:
   - psql -c "CREATE DATABASE aiopg;" -U postgres
