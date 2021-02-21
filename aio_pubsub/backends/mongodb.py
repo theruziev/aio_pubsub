@@ -1,5 +1,4 @@
 import asyncio
-import json
 from datetime import datetime
 
 from aio_pubsub.interfaces import PubSub, Subscriber
@@ -18,9 +17,10 @@ except ImportError:
 class MongoDBSubscriber(Subscriber):
     def __init__(self, channel, collection):
         self.channel = channel
-        self.cursor = collection.find({'channel': self.channel,
-                                       'when': {'$gte': datetime.utcnow()}},
-                                       cursor_type=pymongo.CursorType.TAILABLE_AWAIT)
+        self.cursor = collection.find(
+            {"channel": self.channel, "when": {"$gte": datetime.utcnow()}},
+            cursor_type=pymongo.CursorType.TAILABLE_AWAIT,
+        )
 
     def __aiter__(self):
         return self
@@ -29,23 +29,29 @@ class MongoDBSubscriber(Subscriber):
         while self.cursor.alive:
             try:
                 async for message in self.cursor:
-                # message = next(self.cursor)
-                    if message['type'] == 'message':
-                        return message['message']
-            except StopIteration: # pragma: no cover
+                    # message = next(self.cursor)
+                    if message["type"] == "message":
+                        return message["message"]
+            except StopIteration:  # pragma: no cover
                 asyncio.sleep(1)
 
+
 class MongoDBPubSub(PubSub):
-    def __init__(self, host=None, port=None, maxPoolSize=100,
-                 database='aio_pubsub',
-                 collection='aio_pubsub_messages',
-                 collection_size=10 * 2 ** 20):
+    def __init__(
+        self,
+        host=None,
+        port=None,
+        maxPoolSize=100,
+        database="aio_pubsub",
+        collection="aio_pubsub_messages",
+        collection_size=10 * 2 ** 20,
+    ):
         if motor_installed is False:
             raise RuntimeError("Please install `motor`")  # pragma: no cover
 
         self._host = host
         self._port = port
-        self._maxPoolSize = maxPoolSize    
+        self._maxPoolSize = maxPoolSize
 
         self._database = database
         self._collection_size = collection_size
@@ -56,14 +62,17 @@ class MongoDBPubSub(PubSub):
         if motor_installed is False:
             raise RuntimeError("Please install `motor`")  # pragma: no cover
 
-        if not self._collection:  
-            client = motor.motor_asyncio.AsyncIOMotorClient(host=self._host, port=self._port,
-                                          maxPoolSize=self._maxPoolSize)
+        if not self._collection:
+            client = motor.motor_asyncio.AsyncIOMotorClient(
+                host=self._host, port=self._port, maxPoolSize=self._maxPoolSize
+            )
 
             db = client[self._database]
 
             try:
-                await db.create_collection(self._collection_name, size=self._collection_size, capped=True)
+                await db.create_collection(
+                    self._collection_name, size=self._collection_size, capped=True
+                )
             except pymongo.errors.CollectionInvalid:
                 pass
             self._collection = db[self._collection_name]
@@ -72,10 +81,9 @@ class MongoDBPubSub(PubSub):
 
     async def publish(self, channel: str, message: Message):
         collection = await self.get_collection()
-        await collection.insert_one({'type': 'message',
-                                    'channel': channel,
-                                    'message': message,
-                                    'when': datetime.utcnow()})
+        await collection.insert_one(
+            {"type": "message", "channel": channel, "message": message, "when": datetime.utcnow()}
+        )
 
     async def subscribe(self, channel) -> "MongoDBSubscriber":
         collection = await self.get_collection()
