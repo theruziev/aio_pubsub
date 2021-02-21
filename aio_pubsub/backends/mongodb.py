@@ -10,8 +10,8 @@ try:
     import pymongo
 
     motor_installed = True
-except ImportError:
-    pass  # pragma: no cover
+except ImportError:  # pragma: no cover
+    pass 
 
 
 class MongoDBSubscriber(Subscriber):
@@ -29,10 +29,8 @@ class MongoDBSubscriber(Subscriber):
         while self.cursor.alive:
             try:
                 async for message in self.cursor:
-                    # message = next(self.cursor)
-                    if message["type"] == "message":
-                        return message["message"]
-            except StopIteration:  # pragma: no cover
+                    return message["message"]
+            except StopIteration: # pragma: no cover
                 asyncio.sleep(1)
 
 
@@ -82,7 +80,7 @@ class MongoDBPubSub(PubSub):
     async def publish(self, channel: str, message: Message):
         collection = await self.get_collection()
         await collection.insert_one(
-            {"type": "message", "channel": channel, "message": message, "when": datetime.utcnow()}
+            {"channel": channel, "message": message, "when": datetime.utcnow()}
         )
 
     async def subscribe(self, channel) -> "MongoDBSubscriber":
