@@ -26,7 +26,7 @@ class MongoDBSubscriber(Subscriber):
         return self
 
     async def __anext__(self):
-        while self.cursor.alive:
+        while self.cursor.alive:  # pragma: no cover
             try:
                 async for message in self.cursor:
                     return message["message"]
