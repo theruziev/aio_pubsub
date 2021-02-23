@@ -35,54 +35,38 @@ class MongoDBSubscriber(Subscriber):
 
 
 class MongoDBPubSub(PubSub):
-    def __init__(
-        self,
+    def __init__(self, collection):
+        self._collection = collection
+
+    async def publish(self, channel: str, message: Message):
+        await self._collection.insert_one(
+            {"channel": channel, "message": message, "when": datetime.utcnow()}
+        )
+
+    async def subscribe(self, channel) -> "MongoDBSubscriber":
+        return MongoDBSubscriber(channel, self._collection)
+
+    @staticmethod
+    async def get_collection(
         host=None,
         port=None,
-        maxPoolSize=100,
+        max_pool_size=100,
         database="aio_pubsub",
         collection="aio_pubsub_messages",
         collection_size=10 * 2 ** 20,
     ):
         if motor_installed is False:
             raise RuntimeError("Please install `motor`")  # pragma: no cover
-
-        self._host = host
-        self._port = port
-        self._maxPoolSize = maxPoolSize
-
-        self._database = database
-        self._collection_size = collection_size
-        self._collection_name = collection
-        self._collection = None
-
-    async def get_collection(self):
-        if motor_installed is False:
-            raise RuntimeError("Please install `motor`")  # pragma: no cover
-
-        if not self._collection:
-            client = motor.motor_asyncio.AsyncIOMotorClient(
-                host=self._host, port=self._port, maxPoolSize=self._maxPoolSize
-            )
-
-            db = client[self._database]
-
-            try:
-                await db.create_collection(
-                    self._collection_name, size=self._collection_size, capped=True
-                )
-            except pymongo.errors.CollectionInvalid:
-                pass
-            self._collection = db[self._collection_name]
-
-        return self._collection
-
-    async def publish(self, channel: str, message: Message):
-        collection = await self.get_collection()
-        await collection.insert_one(
-            {"channel": channel, "message": message, "when": datetime.utcnow()}
+        client = motor.motor_asyncio.AsyncIOMotorClient(
+            host=host, port=port, maxPoolSize=max_pool_size
         )
 
-    async def subscribe(self, channel) -> "MongoDBSubscriber":
-        collection = await self.get_collection()
-        return MongoDBSubscriber(channel, collection)
+        db = client[database]
+
+        try:
+            await db.create_collection(collection, size=collection_size, capped=True)
+        except pymongo.errors.CollectionInvalid:
+            pass
+        collection = db[collection]
+
+        return collection

@@ -4,18 +4,24 @@ import pytest
 from aio_pubsub.backends.mongodb import MongoDBPubSub
 
 
+@pytest.fixture
+async def create_pub_sub_conn():
+    collection = await MongoDBPubSub.get_collection(host="localhost", port=27017)
+    yield collection
+
+
 @pytest.mark.asyncio
-async def test_subscriber_isinstance():
+async def test_subscriber_isinstance(create_pub_sub_conn):
     from aio_pubsub.backends.mongodb import MongoDBSubscriber
 
-    pubsub = MongoDBPubSub(host="localhost", port=27017)
+    pubsub = MongoDBPubSub(create_pub_sub_conn)
     subscriber = await pubsub.subscribe("a_chan")
     assert isinstance(subscriber, MongoDBSubscriber)
 
 
 @pytest.mark.asyncio
-async def test_iteration_protocol():
-    pubsub = MongoDBPubSub(host="localhost", port=27017)
+async def test_iteration_protocol(create_pub_sub_conn):
+    pubsub = MongoDBPubSub(create_pub_sub_conn)
     subscriber = await pubsub.subscribe("a_chan")
     await pubsub.publish("a_chan", "hello world!")
     subscriber = subscriber.__aiter__()
@@ -23,8 +29,8 @@ async def test_iteration_protocol():
 
 
 @pytest.mark.asyncio
-async def test_pubsub():
-    pubsub = MongoDBPubSub(host="localhost", port=27017)
+async def test_pubsub(create_pub_sub_conn):
+    pubsub = MongoDBPubSub(create_pub_sub_conn)
     subscriber = await pubsub.subscribe("a_chan")
     await pubsub.publish("a_chan", "hello world!")
     await pubsub.publish("a_chan", "hello universe!")
@@ -34,8 +40,8 @@ async def test_pubsub():
 
 
 @pytest.mark.asyncio
-async def test_not_subscribed_chan():
-    pubsub = MongoDBPubSub(host="localhost", port=27017)
+async def test_not_subscribed_chan(create_pub_sub_conn):
+    pubsub = MongoDBPubSub(create_pub_sub_conn)
     subscriber_a_chan = await pubsub.subscribe("a_chan")
     subscriber_c_chan = await pubsub.subscribe("c_chan")
     await pubsub.publish("a_chan", "hello world!")
