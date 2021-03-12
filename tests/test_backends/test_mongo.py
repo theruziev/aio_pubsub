@@ -51,3 +51,15 @@ async def test_not_subscribed_chan(create_pub_sub_conn):
     subscriber_c_chan = subscriber_c_chan.__aiter__()
     assert await subscriber_a_chan.__anext__() == "hello world!"
     assert await subscriber_c_chan.__anext__() == "hello universe!"
+
+
+@pytest.mark.asyncio
+async def test_broadcast(create_pub_sub_conn):
+    pubsub = MongoDBPubSub(create_pub_sub_conn)
+    subscriber_1 = await pubsub.subscribe("a_chan")
+    subscriber_2 = await pubsub.subscribe("a_chan")
+    await pubsub.publish("a_chan", "hello world!")
+    subscriber_1 = subscriber_1.__aiter__()
+    subscriber_2 = subscriber_2.__aiter__()
+    assert await subscriber_1.__anext__() == "hello world!"
+    assert await subscriber_2.__anext__() == "hello world!"

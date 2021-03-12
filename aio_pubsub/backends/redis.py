@@ -5,7 +5,7 @@ from aio_pubsub.typings import Message
 
 aioredis_installed = False
 try:
-    from aioredis import Redis
+    import aioredis 
 
     aioredis_installed = True
 except ImportError:
@@ -13,7 +13,8 @@ except ImportError:
 
 
 class RedisSubscriber(Subscriber):
-    def __init__(self, channel):
+    def __init__(self, sub, channel):
+        self.sub = sub
         self.channel = channel
 
     def __aiter__(self):
@@ -21,18 +22,22 @@ class RedisSubscriber(Subscriber):
 
 
 class RedisPubSub(PubSub):
-    def __init__(self, pub_connection: Redis, sub_connection: Redis):
+    def __init__(self, connection: aioredis.Redis):
         if aioredis_installed is False:
             raise RuntimeError("Please install `aioredis`")  # pragma: no cover
 
-        self.sub = pub_connection
-        self.pub = sub_connection
+        self.connection = connection
 
     async def publish(self, channel: str, message: Message):
-        channels = await self.pub.pubsub_channels(channel)
+        channels = await self.connection.pubsub_channels(channel)
         for ch in channels:
-            await self.pub.publish_json(ch, message)
+            await self.connection.publish_json(ch, message)
 
     async def subscribe(self, channel) -> "RedisSubscriber":
-        channel = await self.sub.subscribe(channel)
-        return RedisSubscriber(channel[0])
+        if aioredis_installed is False:
+            raise RuntimeError("Please install `aioredis`")  # pragma: no cover
+
+        sub = await aioredis.create_redis(self.connection.address)
+
+        channel = await sub.subscribe(channel)
+        return RedisSubscriber(sub, channel[0])
