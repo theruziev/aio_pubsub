@@ -22,13 +22,18 @@ class RedisSubscriber(Subscriber):
 
 
 class RedisPubSub(PubSub):
-    def __init__(self, connection: aioredis.Redis):
+    def __init__(self, url: str) -> None:
         if aioredis_installed is False:
             raise RuntimeError("Please install `aioredis`")  # pragma: no cover
 
-        self.connection = connection
+        self.url = url
+        self.connection = None
 
-    async def publish(self, channel: str, message: Message):
+    async def publish(self, channel: str, message: Message) -> None:
+        if self.connection is None:
+            self.connection = await aioredis.create_redis(self.url)
+
+            
         channels = await self.connection.pubsub_channels(channel)
         for ch in channels:
             await self.connection.publish_json(ch, message)
@@ -37,7 +42,7 @@ class RedisPubSub(PubSub):
         if aioredis_installed is False:
             raise RuntimeError("Please install `aioredis`")  # pragma: no cover
 
-        sub = await aioredis.create_redis(self.connection.address)
+        sub = await aioredis.create_redis(self.url)
 
         channel = await sub.subscribe(channel)
         return RedisSubscriber(sub, channel[0])
