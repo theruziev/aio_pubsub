@@ -31,7 +31,7 @@ class MongoDBSubscriber(Subscriber):
                 async for message in self.cursor:
                     return message["message"]
             except StopIteration:  # pragma: no cover
-                asyncio.sleep(1)
+                await asyncio.sleep(0.1)
 
 
 class MongoDBPubSub(PubSub):
