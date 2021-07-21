@@ -1,4 +1,5 @@
 import asyncio
+import time
 from datetime import datetime
 
 from aio_pubsub.interfaces import PubSub, Subscriber
@@ -17,7 +18,8 @@ except ImportError:  # pragma: no cover
 class MongoDBSubscriber(Subscriber):
     def __init__(self, channel, collection):
         self.channel = channel
-        self.cursor = collection.find(
+        self.collection = collection
+        self.cursor = self.collection.find(
             {"channel": self.channel, "when": {"$gte": datetime.utcnow()}},
             cursor_type=pymongo.CursorType.TAILABLE_AWAIT,
         )
@@ -26,12 +28,19 @@ class MongoDBSubscriber(Subscriber):
         return self
 
     async def __anext__(self):
-        while self.cursor.alive:  # pragma: no cover
-            try:
-                async for message in self.cursor:
-                    return message["message"]
-            except StopIteration:  # pragma: no cover
-                await asyncio.sleep(0.1)
+        while True:
+            while self.cursor.alive:  # pragma: no cover
+                try:
+                    async for message in self.cursor:
+                        if "message" in message and message["message"] is not None:
+                            return message["message"]
+                except StopIteration:  # pragma: no cover
+                    pass
+            self.cursor = self.collection.find(
+                {"channel": self.channel, "when": {"$gte": datetime.utcnow()}},
+                cursor_type=pymongo.CursorType.TAILABLE_AWAIT,
+            )
+            await asyncio.sleep(1)
 
 
 class MongoDBPubSub(PubSub):
@@ -39,9 +48,7 @@ class MongoDBPubSub(PubSub):
         self._collection = collection
 
     async def publish(self, channel: str, message: Message):
-        await self._collection.insert_one(
-            {"channel": channel, "message": message, "when": datetime.utcnow()}
-        )
+        await self._collection.insert_one({"channel": channel, "message": message, "when": datetime.utcnow()})
 
     async def subscribe(self, channel) -> "MongoDBSubscriber":
         return MongoDBSubscriber(channel, self._collection)
@@ -57,9 +64,7 @@ class MongoDBPubSub(PubSub):
     ):
         if motor_installed is False:
             raise RuntimeError("Please install `motor`")  # pragma: no cover
-        client = motor.motor_asyncio.AsyncIOMotorClient(
-            host=host, port=port, maxPoolSize=max_pool_size
-        )
+        client = motor.motor_asyncio.AsyncIOMotorClient(host=host, port=port, maxPoolSize=max_pool_size)
 
         db = client[database]
 
