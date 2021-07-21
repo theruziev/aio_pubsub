@@ -19,8 +19,9 @@ class MongoDBSubscriber(Subscriber):
     def __init__(self, channel, collection):
         self.channel = channel
         self.collection = collection
+        self.now = datetime.utcnow()
         self.cursor = self.collection.find(
-            {"channel": self.channel, "when": {"$gte": datetime.utcnow()}},
+            {"channel": self.channel, "when": {"$gte": self.now}},
             cursor_type=pymongo.CursorType.TAILABLE_AWAIT,
         )
 
@@ -37,7 +38,7 @@ class MongoDBSubscriber(Subscriber):
                 except StopIteration:  # pragma: no cover
                     pass
             self.cursor = self.collection.find(
-                {"channel": self.channel, "when": {"$gte": datetime.utcnow()}},
+                {"channel": self.channel, "when": {"$gte": self.now}},
                 cursor_type=pymongo.CursorType.TAILABLE_AWAIT,
             )
             await asyncio.sleep(1)
