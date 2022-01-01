@@ -42,3 +42,15 @@ async def test_dispose_subscriber():
     assert await pubsub.publish("a_chan", "hello world!") == 1
     del subscriber
     assert await pubsub.publish("a_chan", "hello world!") == 0
+
+
+@pytest.mark.asyncio
+async def test_broadcast():
+    pubsub = MemoryPubSub()
+    subscriber_1 = await pubsub.subscribe("a_chan")
+    subscriber_2 = await pubsub.subscribe("a_chan")
+    await pubsub.publish("a_chan", "hello world!")
+    subscriber_1 = subscriber_1.__aiter__()
+    subscriber_2 = subscriber_2.__aiter__()
+    assert await subscriber_1.__anext__() == "hello world!"
+    assert await subscriber_2.__anext__() == "hello world!"
