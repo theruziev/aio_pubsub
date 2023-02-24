@@ -33,7 +33,7 @@ setup(
     zip_safe=False,
     extras_require={
         'aioredis': [
-            'aioredis == 1.3.1',
+            'aioredis == 2.0.1',
         ],
         'aiopg': [
             'aiopg >= 1.0.0',
